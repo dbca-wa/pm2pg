@@ -13,7 +13,7 @@ config.load_incluster_config()
 
 # Access the secret
 v1 = client.CoreV1Api()
-secret = v1.read_namespaced_secret("webhook-secrets", "pm2pg")
+secret = v1.read_namespaced_secret("pm2pg-secrets", "pm2pg")
 
 WEBHOOK_USERNAME = base64.b64decode(secret.data['username']).decode('utf-8')
 WEBHOOK_PASSWORD = base64.b64decode(secret.data['password']).decode('utf-8')
