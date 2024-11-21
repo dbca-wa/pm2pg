@@ -5,24 +5,15 @@ import json
 import psycopg2
 from flask import Flask, request
 from flask_basicauth import BasicAuth
-from kubernetes import client, config
-import base64
+import os
 
-# Load Kubernetes configuration
-config.load_incluster_config()
-
-# Access the secret
-v1 = client.CoreV1Api()
-secret = v1.read_namespaced_secret("pm2pg-secrets", "pm2pg")
-
-WEBHOOK_USERNAME = base64.b64decode(secret.data['username']).decode('utf-8')
-WEBHOOK_PASSWORD = base64.b64decode(secret.data['password']).decode('utf-8')
-DB_USER = base64.b64decode(secret.data['db_user']).decode('utf-8')
-DB_PASSWORD = base64.b64decode(secret.data['db_password']).decode('utf-8')
-DB_NAME = base64.b64decode(secret.data['db_name']).decode('utf-8')
-DB_HOST = base64.b64decode(secret.data['db_host']).decode('utf-8')
-DB_PORT = base64.b64decode(secret.data['db_port']).decode('utf-8')
-
+WEBHOOK_USERNAME = os.getenv('WEBHOOK_USERNAME')
+WEBHOOK_PASSWORD = os.getenv('WEBHOOK_PASSWORD')
+DB_USER = os.getenv('DB_USER')
+DB_PASSWORD = os.getenv('DB_PASSWORD')
+DB_NAME = os.getenv('DB_NAME')
+DB_HOST = os.getenv('DB_HOST')
+DB_PORT = os.getenv('DB_PORT')
 save_webhook_output_file = "webhooklogs.json"
 
 app = Flask(__name__)
