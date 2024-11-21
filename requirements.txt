@@ -3,6 +3,6 @@ requests==2.25.1
 Flask_BasicAuth==0.2.0
 urllib3==1.26.19
 cryptography==43.0.1
-Werkzeug==2.0.3
+Werkzeug==3.0.6
 psycopg2-binary
 kubernetes==18.20.0
