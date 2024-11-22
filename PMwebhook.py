@@ -4,11 +4,11 @@ urllib3.disable_warnings(InsecureRequestWarning)  # disable insecure https warni
 import json
 import psycopg2
 from flask import Flask, request
-from flask_basicauth import BasicAuth
+# from flask_basicauth import BasicAuth
 import os
 
-WEBHOOK_USERNAME = os.getenv('WEBHOOK_USERNAME')
-WEBHOOK_PASSWORD = os.getenv('WEBHOOK_PASSWORD')
+# WEBHOOK_USERNAME = os.getenv('WEBHOOK_USERNAME')
+# WEBHOOK_PASSWORD = os.getenv('WEBHOOK_PASSWORD')
 DB_USER = os.getenv('DB_USER')
 DB_PASSWORD = os.getenv('DB_PASSWORD')
 DB_NAME = os.getenv('DB_NAME')
@@ -18,9 +18,9 @@ save_webhook_output_file = "webhooklogs.json"
 
 app = Flask(__name__)
 
-app.config['BASIC_AUTH_USERNAME'] = WEBHOOK_USERNAME
-app.config['BASIC_AUTH_PASSWORD'] = WEBHOOK_PASSWORD
-app.config['BASIC_AUTH_FORCE'] = True
+# app.config['BASIC_AUTH_USERNAME'] = WEBHOOK_USERNAME
+# app.config['BASIC_AUTH_PASSWORD'] = WEBHOOK_PASSWORD
+# app.config['BASIC_AUTH_FORCE'] = True
 
 # Establish database connection
 connection = psycopg2.connect(
@@ -33,15 +33,15 @@ connection = psycopg2.connect(
 print("Database connection to {} successful".format(DB_NAME))
 
 
-basic_auth = BasicAuth(app)
+# basic_auth = BasicAuth(app)
 
 @app.route('/') 
-@basic_auth.required
+# @basic_auth.required
 def index():
     return '<h1>Im Alive</h1>', 200
 
 @app.route('/api', methods=['POST'])  
-@basic_auth.required
+# @basic_auth.required
 def webhook():
     if request.method == 'POST':
         print('Webhook Received')

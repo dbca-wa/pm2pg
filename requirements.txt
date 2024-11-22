@@ -1,6 +1,6 @@
 Flask==2.2.5
 requests==2.25.1
-Flask_BasicAuth==0.2.0
+# Flask_BasicAuth==0.2.0
 urllib3==1.26.19
 cryptography==43.0.1
 Werkzeug==3.0.6
