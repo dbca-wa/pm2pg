@@ -15,4 +15,4 @@ USER appuser
 
 EXPOSE 5443
 RUN pip install -r requirements.txt
-CMD [ "python3", "PMwebhook.py"]
+CMD [ "python3", "pm_webhook.py"]
