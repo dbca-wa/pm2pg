@@ -45,50 +45,43 @@ def webhook():
             filehandle.write('%s\n' % json.dumps(request_json, indent=4))
             filehandle.write('= - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - \n')
 
-        try:
-            connection = psycopg2.connect(
-                user=DB_USER,
-                password=DB_PASSWORD,
-                database=DB_NAME,
-                host=DB_HOST,
-                port=DB_PORT
-            )
-            cursor = connection.cursor()
-            insert_query = f"""
-            INSERT INTO {TABLE_NAME} (ID, Type, RecordType, TypeCode, Tag, MessageID, Email, fromaddress, BouncedAt, Inactive, DumpAvailable, CanActivate, Subject, ServerID, MessageStream, Name, Description, Metadata, Details, Content)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """
-            cursor.execute(insert_query, (
-                request_json.get('ID'),
-                request_json.get('Type'),
-                request_json.get('RecordType'),
-                request_json.get('TypeCode'),
-                request_json.get('Tag'),
-                request_json.get('MessageID'),
-                request_json.get('Email'),
-                request_json.get('From'),
-                request_json.get('BouncedAt'),
-                request_json.get('Inactive'),
-                request_json.get('DumpAvailable'),
-                request_json.get('CanActivate'),
-                request_json.get('Subject'),
-                request_json.get('ServerID'),
-                request_json.get('MessageStream'),
-                request_json.get('Name'),
-                request_json.get('Description'),
-                json.dumps(request_json.get('Metadata')),
-                request_json.get('Details'),
-                request_json.get('Content')
-            ))
-            connection.commit()
-        except Exception as e:
-            print(f"Error inserting into database: {e}")
-            return 'Internal Server Error', 500
-        finally:
-            if cursor:
-                cursor.close()
-            if connection:
-                connection.close()
+        connection = psycopg2.connect(
+            user=DB_USER,
+            password=DB_PASSWORD,
+            database=DB_NAME,
+            host=DB_HOST,
+            port=DB_PORT
+        )
+        cursor = connection.cursor()
+        insert_query = f"""
+        INSERT INTO {TABLE_NAME} (ID, Type, RecordType, TypeCode, Tag, MessageID, Details, Email, fromaddress, BouncedAt, Inactive, DumpAvailable, CanActivate, Subject, ServerID, MessageStream, Content, Name, Description, Metadata)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(insert_query, (
+            request_json.get('ID'),
+            request_json.get('Type'),
+            request_json.get('RecordType'),
+            request_json.get('TypeCode'),
+            request_json.get('Tag'),
+            request_json.get('MessageID'),
+            request_json.get('Details'),
+            request_json.get('Email'),
+            request_json.get('From'),
+            request_json.get('BouncedAt'),
+            request_json.get('Inactive'),
+            request_json.get('DumpAvailable'),
+            request_json.get('CanActivate'),
+            request_json.get('Subject'),
+            request_json.get('ServerID'),
+            request_json.get('MessageStream'),
+            request_json.get('Content'),
+            request_json.get('Name'),
+            request_json.get('Description'),
+            json.dumps(request_json.get('Metadata'))
+        ))
+        connection.commit()
+        cursor.close()
+        connection.close()
 
         return 'Webhook notification received', 202
     else:
