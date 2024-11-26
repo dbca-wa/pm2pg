@@ -95,4 +95,4 @@ def webhook():
         return 'POST Method not supported', 405
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5443, debug=True, ssl_context=('cert.pem', 'key.pem'))
+    app.run(host='0.0.0.0', port=5443, debug=True)
