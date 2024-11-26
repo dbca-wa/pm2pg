@@ -76,7 +76,7 @@ def webhook():
                 request_json.get('MessageStream'),
                 request_json.get('Name'),
                 request_json.get('Description'),
-                request_json.get('Metadata'),
+                json.dumps(request_json.get('Metadata')),
                 request_json.get('Details'),
                 request_json.get('Content')
             ))
