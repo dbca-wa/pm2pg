@@ -53,8 +53,8 @@ def webhook():
         )
         cursor = connection.cursor()
         insert_query = f"""
-        INSERT INTO {TABLE_NAME} (ID, Type, RecordType, TypeCode, Tag, MessageID, Details, Email, fromaddress, BouncedAt, Inactive, DumpAvailable, CanActivate, Subject, ServerID, MessageStream, Content, Name, Description, Metadata)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO {TABLE_NAME} (ID, Type, RecordType, TypeCode, Tag, MessageID, Email, fromaddress, BouncedAt, Inactive, DumpAvailable, CanActivate, Subject, ServerID, MessageStream, Content, Name, Description, Metadata)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
         cursor.execute(insert_query, (
             request_json.get('ID'),
@@ -63,7 +63,6 @@ def webhook():
             request_json.get('TypeCode'),
             request_json.get('Tag'),
             request_json.get('MessageID'),
-            request_json.get('Details'),
             request_json.get('Email'),
             request_json.get('From'),
             request_json.get('BouncedAt'),
