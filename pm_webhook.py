@@ -36,7 +36,7 @@ def webhook():
     if request.method == 'POST':
         print('Webhook Received')
         request_json = request.json
-        request_json.pop('Description', None)
+        request_json.pop('Details', None)
         print('Payload: ')
         print(json.dumps(request_json, indent=4))
 
