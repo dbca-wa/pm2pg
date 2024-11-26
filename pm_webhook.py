@@ -14,6 +14,7 @@ DB_PASSWORD = os.getenv('DB_PASSWORD')
 DB_NAME = os.getenv('DB_NAME')
 DB_HOST = os.getenv('DB_HOST')
 DB_PORT = os.getenv('DB_PORT')
+TABLE_NAME = os.getenv('TABLE_NAME') 
 save_webhook_output_file = "webhooklogs.json"
 
 app = Flask(__name__)
@@ -21,17 +22,6 @@ app = Flask(__name__)
 # app.config['BASIC_AUTH_USERNAME'] = WEBHOOK_USERNAME
 # app.config['BASIC_AUTH_PASSWORD'] = WEBHOOK_PASSWORD
 # app.config['BASIC_AUTH_FORCE'] = True
-
-# Establish database connection
-connection = psycopg2.connect(
-    user=DB_USER,
-    password=DB_PASSWORD,
-    database=DB_NAME,
-    host=DB_HOST,
-    port=DB_PORT
-)
-print("Database connection to {} successful".format(DB_NAME))
-
 
 # basic_auth = BasicAuth(app)
 
@@ -48,12 +38,49 @@ def webhook():
         request_json = request.json
 
         print('Payload: ')
-        print(json.dumps(request_json,indent=4))
-
+        print(json.dumps(request_json, indent=4))
 
         with open(save_webhook_output_file, 'a') as filehandle:
-            filehandle.write('%s\n' % json.dumps(request_json,indent=4))
+            filehandle.write('%s\n' % json.dumps(request_json, indent=4))
             filehandle.write('= - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - = - \n')
+
+        connection = psycopg2.connect(
+            user=DB_USER,
+            password=DB_PASSWORD,
+            database=DB_NAME,
+            host=DB_HOST,
+            port=DB_PORT
+        )
+        cursor = connection.cursor()
+        insert_query = f"""
+        INSERT INTO {TABLE_NAME} (ID, Type, RecordType, TypeCode, Tag, MessageID, Details, Email, "From", BouncedAt, Inactive, DumpAvailable, CanActivate, Subject, ServerID, MessageStream, Content, Name, Description, Metadata)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(insert_query, (
+            request_json.get('ID'),
+            request_json.get('Type'),
+            request_json.get('RecordType'),
+            request_json.get('TypeCode'),
+            request_json.get('Tag'),
+            request_json.get('MessageID'),
+            request_json.get('Details'),
+            request_json.get('Email'),
+            request_json.get('From'),
+            request_json.get('BouncedAt'),
+            request_json.get('Inactive'),
+            request_json.get('DumpAvailable'),
+            request_json.get('CanActivate'),
+            request_json.get('Subject'),
+            request_json.get('ServerID'),
+            request_json.get('MessageStream'),
+            request_json.get('Content'),
+            request_json.get('Name'),
+            request_json.get('Description'),
+            json.dumps(request_json.get('Metadata'))
+        ))
+        connection.commit()
+        cursor.close()
+        connection.close()
 
         return 'Webhook notification received', 202
     else:
